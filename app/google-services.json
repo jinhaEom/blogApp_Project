@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "130371019250",
+    "project_id": "diaryapp-3bbc9",
+    "storage_bucket": "diaryapp-3bbc9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130371019250:android:54c43887fd8fc755e50b6b",
+        "android_client_info": {
+          "package_name": "bu.ac.kr.blogapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "130371019250-q3d8iqgt6ghns4dlrocfkdd4f8ducv9b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP4eOO5m7OGjSr5o-zSDlVNS3qeaBH7SY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "130371019250-q3d8iqgt6ghns4dlrocfkdd4f8ducv9b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

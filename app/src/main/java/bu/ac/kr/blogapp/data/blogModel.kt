@@ -9,6 +9,8 @@ data class blogModel(
 
     @PrimaryKey(autoGenerate = true)
     val id : Long?,
+    @ColumnInfo(name="userId")
+    val userId : String,
 
     @ColumnInfo(name = "seq")
     var seq : Int,
@@ -25,5 +27,5 @@ data class blogModel(
     @ColumnInfo(name = "createDate")
     var createDate: Long
 ){
-    constructor(): this(null,0,"","","",-1)
+    constructor(): this(null,"",0,"","","",-1)
 }
