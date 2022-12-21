@@ -69,4 +69,10 @@ dependencies {
 
     implementation("androidx.cardview:cardview:1.0.0")
 
+    implementation "androidx.room:room-runtime:2.2.4"
+    kapt "android.arch.persistence.room:compiler:2.2.4"
+
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
+    kapt 'androidx.lifecycle:lifecycle-compiler:2.2.0'
+
 }

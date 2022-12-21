@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName="tb_blog")
-data class blogModel(
+data class BlogModel(
 
     @PrimaryKey(autoGenerate = true)
     val id : Long?,
