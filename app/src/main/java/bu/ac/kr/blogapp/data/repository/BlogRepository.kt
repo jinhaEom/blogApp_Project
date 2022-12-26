@@ -12,7 +12,7 @@ class BlogRepository(application: Application) {
     private var mBlogItems : LiveData<List<BlogModel>>
 
     init {
-        mBlogDatabase= BlogDatabase.getInstance(application)
+        mBlogDatabase= BlogDatabase.getInstance(application)!!
         mBlogDAO = mBlogDatabase.blogDao()
         mBlogItems = mBlogDAO.getBlogList()
     }
@@ -23,6 +23,14 @@ class BlogRepository(application: Application) {
         Thread(Runnable{
             mBlogDAO.insertBlog(blogModel)
         }).start()
+    }
+    fun deleteBlog(blogModel : BlogModel){
+        try{
+            val thread = Thread(Runnable{
+                mBlogDAO.deleteBlog(blogModel)
+            })
+            thread.start()
+        } catch(e : Exception){}
     }
 }
 // viewmodel에서 이 repo를 통해 데이터를 얻음

@@ -17,6 +17,9 @@ class BlogViewModel(application: Application) :
     fun insertBlog(blogModel: BlogModel){
         mBlogRepository.insertBlog(blogModel)
     }
+    fun deleteBlog(blogModel: BlogModel){
+        mBlogRepository.deleteBlog(blogModel)
+    }
     fun getBlogList() : LiveData<List<BlogModel>> {
         return mBlogItems
     }
