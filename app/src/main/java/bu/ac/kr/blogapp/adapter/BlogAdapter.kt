@@ -1,55 +1,60 @@
 package bu.ac.kr.blogapp.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import bu.ac.kr.blogapp.R
 import bu.ac.kr.blogapp.data.BlogModel
-import bu.ac.kr.blogapp.databinding.ActivityMainBinding
+
+import bu.ac.kr.blogapp.databinding.ItemListBinding
 import com.bumptech.glide.Glide
-
-class BlogAdapter(val BlogItemClick: (BlogModel) -> Unit, val BlogItemLongClick: (BlogModel) -> Unit):
-    RecyclerView.Adapter<BlogAdapter.ViewHolder>() {
-        private var blogs: List<BlogModel> = listOf()
+import java.text.SimpleDateFormat
+import java.util.*
 
 
+class BlogAdapter(val onItemClicked: (BlogModel) -> Unit): ListAdapter<BlogModel, BlogAdapter.ViewHolder>(diffUtil){
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false)
-        return ViewHolder(view)
-    }
-    override fun getItemCount(): Int {
-        return blogs.size
-    }
+    inner class ViewHolder(private val binding : ItemListBinding): RecyclerView.ViewHolder(binding.root){
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        viewHolder.bind(blogs[position])
-    }
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        private val coverImageView = itemView.findViewById<ImageView>(R.id.coverImageView)
-        private val title = itemView.findViewById<TextView>(R.id.descriptionTextView)
-        private val reviewEditText = itemView.findViewById<TextView>(R.id.reviewEditText)
-        fun bind(blogModel: BlogModel){
-            Glide.with(itemView)
-                .load(R.drawable.ic_launcher_foreground)
-            title.text = blogModel.title
-            reviewEditText.text = blogModel.content
+        fun bind(blogModel: BlogModel) {
+            val format = SimpleDateFormat("MM월 dd일")
+            val date = Date(blogModel.createDate)
 
-            itemView.setOnClickListener {
-                BlogItemClick(blogModel)
+            binding.DiaryTitle.text = blogModel.title
+            binding.DiaryDate.text = format.format(date).toString()
+
+            if (blogModel.imageUrl.isNotEmpty()) {
+                Glide.with(binding.DiaryImage)
+                    .load(blogModel.imageUrl)
+                    .into(binding.DiaryImage)
             }
-            itemView.setOnLongClickListener {
-                BlogItemLongClick(blogModel)
-                true
+            binding.root.setOnClickListener {
+                onItemClicked(blogModel)
             }
         }
     }
-    fun setBlogs(blogs:List<BlogModel>){  // 화면 갱신할때 사용할 함수
-        this.blogs = blogs
-        notifyDataSetChanged()
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(currentList[position])
+    }
+
+    companion object {
+        val diffUtil = object : DiffUtil.ItemCallback<BlogModel>() {
+            override fun areItemsTheSame(oldItem: BlogModel, newItem: BlogModel): Boolean {
+                return oldItem.createDate == newItem.createDate
+            }
+
+            override fun areContentsTheSame(oldItem: BlogModel, newItem: BlogModel): Boolean {
+                return oldItem == newItem
+            }
+
+        }
+    }
 }
+

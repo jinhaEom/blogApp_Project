@@ -13,7 +13,7 @@ data class BlogModel(
     val userId : String,
 
     @ColumnInfo(name = "seq")
-    var seq : Int,
+    var imageUrl : String,
 
     @ColumnInfo(name = "title")
     var title: String,
@@ -27,5 +27,5 @@ data class BlogModel(
     @ColumnInfo(name = "createDate")
     var createDate: Long
 ){
-    constructor(): this(null,"",0,"","","",-1)
+    constructor(): this(null,"","","","","",-1)
 }

@@ -32,6 +32,7 @@
             android:textSize="23sp" />
 
         <TextView
+            android:id="@+id/Diary_Date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2022.12.20"/>
