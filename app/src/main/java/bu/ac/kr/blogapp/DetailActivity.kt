@@ -8,54 +8,179 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProviders
+import bu.ac.kr.blogapp.data.BlogModel
 import bu.ac.kr.blogapp.data.BlogViewModel
+import bu.ac.kr.blogapp.data.DBKey.Companion.DB_BLOG
+import bu.ac.kr.blogapp.databinding.ActivityDetailBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import java.text.SimpleDateFormat
 import java.util.*
 
 class DetailActivity : AppCompatActivity() {
-    private val OPEN_GALLERY = 1
+    private var selectedUri: Uri? = null
+    private val auth: FirebaseAuth by lazy {
+        Firebase.auth
+    }
+    private val storage: FirebaseStorage by lazy {
+        Firebase.storage
+    }
+    private val blogDB: DatabaseReference by lazy {
+        Firebase.database.reference.child(DB_BLOG)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_detail)
 
-        findViewById<ImageView>(R.id.coverImageView).setOnClickListener { openGallery() }
+        findViewById<ImageView>(R.id.coverImageView).setOnClickListener {
+            when {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    startContentProvider()
+                }
+                shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE) -> {
+                    showPermissionContextPopup()
+                }
+                else -> {
+                    requestPermissions(
+                        arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
+                        1010
+                    )
+                }
+            }
+        }
+        findViewById<Button>(R.id.saveButton).setOnClickListener {
+            val title = findViewById<TextView>(R.id.descriptionTextView).text.toString()
+            val content = findViewById<TextView>(R.id.reviewEditText).text.toString()
+            val userId = auth.currentUser?.uid.orEmpty().toLong()
+
+            showProgress()
+
+            if (selectedUri != null) {
+                val photoUri = selectedUri ?: return@setOnClickListener
+                uploadPhoto(photoUri,
+                    successHandler = { uri ->
+                        uploadBlog(userId, title, content, uri)
+                    },
+                    errorHandler = {
+                        Toast.makeText(this, "사진 업로드에  실패하였습니다.", Toast.LENGTH_SHORT).show()
+                        hideProgress()
+                    }
+                )
+            } else {
+                uploadBlog(userId, title, content, "")
+            }
+        }
+
 
     }
-    private fun openGallery() {
-        val intent : Intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.setType("image/*")
-        startActivityForResult(intent, OPEN_GALLERY)
+
+    private fun uploadPhoto(uri: Uri, successHandler: (String) -> Unit, errorHandler: () -> Unit) {
+        val fileName = "${System.currentTimeMillis()}.png"
+        storage.reference.child("blog/photo").child(fileName)
+            .putFile(uri)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    storage.reference.child("blog/photo").child(fileName).downloadUrl
+                        .addOnSuccessListener { uri ->
+                            successHandler(uri.toString())
+                        }.addOnFailureListener {
+                            errorHandler()
+                        }
+                } else {
+                    errorHandler()
+                }
+            }
     }
 
-    @Override
+    private fun uploadBlog(userId: Long, title: String, content: String, imageUrl: String) {
+        val model = BlogModel(userId, title, content, imageUrl,System.currentTimeMillis())
+        blogDB.push().setValue(model)
+
+        hideProgress()
+        finish()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            1010 ->
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startContentProvider()
+                } else {
+                    Toast.makeText(this, "권한을 거부했습니다.", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
+    private fun startContentProvider() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        startActivityForResult(intent, 2020)
+    }
+
+    private fun showProgress() {
+        findViewById<ProgressBar>(R.id.progressBar).isVisible=true
+
+    }
+
+    private fun hideProgress() {
+        findViewById<ProgressBar>(R.id.progressBar).isVisible=false
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == Activity.RESULT_OK){
-            if(requestCode == OPEN_GALLERY){
-                var currentImageUrl : Uri? = data?.data
-
-                try{
-                    val bitmap = MediaStore.Images.Media.getBitmap(contentResolver,currentImageUrl)
-                    findViewById<ImageView>(R.id.coverImageView).setImageBitmap(bitmap)
-
-                }catch (e: Exception){
-                    e.printStackTrace()
+        if (resultCode != Activity.RESULT_OK) {
+            return
+        }
+        when (requestCode) {
+            2020 -> {
+                val uri = data?.data
+                if (uri != null) {
+                    findViewById<ImageView>(R.id.coverImageView).setImageURI(uri)
+                    selectedUri = uri
+                } else {
+                    Toast.makeText(this, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
-        }else {
-            Log.d("ActivityResult", "에러발생")
+            else -> {
+                Toast.makeText(this, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
+
+    private fun showPermissionContextPopup() {  //사진에 불러올때에 대한 권한
+        AlertDialog.Builder(this)
+            .setTitle("권한이 필요합니다.")
+            .setMessage("사진을 가져오기 위해 필요합니다.")
+            .setPositiveButton("동의") { _, _ ->
+                requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1010)
+
+            }
+            .create()
+            .show()
+    }
+
 }
 
 
