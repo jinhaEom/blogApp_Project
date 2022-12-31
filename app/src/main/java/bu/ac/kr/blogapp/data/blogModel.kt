@@ -10,6 +10,9 @@ data class BlogModel(
     @PrimaryKey(autoGenerate = true)
     val userId : Long?,
 
+    @ColumnInfo(name = "userName")
+    var userName : String,
+
     @ColumnInfo(name = "seq")
     var imageUrl : String,
 
@@ -22,5 +25,6 @@ data class BlogModel(
     @ColumnInfo(name = "createDate")
     var createDate: Long
 ){
-    constructor(): this(null,"","","",-1)
+    constructor(): this(null,"","","","",-1)
+    constructor(userName: String, title: String, content: String, imageUrl: String, currentTimeMillis: Long) : this()
 }

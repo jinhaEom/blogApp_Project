@@ -65,9 +65,9 @@ class DetailActivity : AppCompatActivity() {
             }
         }
         findViewById<Button>(R.id.saveButton).setOnClickListener {
-            val title = findViewById<TextView>(R.id.descriptionTextView).text.toString()
-            val content = findViewById<TextView>(R.id.reviewEditText).text.toString()
-            val userId = auth.currentUser?.uid.orEmpty().toLong()
+            val title = findViewById<EditText>(R.id.descriptionTextView).text.toString()
+            val content = findViewById<EditText>(R.id.reviewEditText).text.toString()
+            val userName = auth.currentUser?.uid.orEmpty()
 
             showProgress()
 
@@ -75,7 +75,7 @@ class DetailActivity : AppCompatActivity() {
                 val photoUri = selectedUri ?: return@setOnClickListener
                 uploadPhoto(photoUri,
                     successHandler = { uri ->
-                        uploadBlog(userId, title, content, uri)
+                        uploadBlog(userName, title, content, uri)
                     },
                     errorHandler = {
                         Toast.makeText(this, "사진 업로드에  실패하였습니다.", Toast.LENGTH_SHORT).show()
@@ -83,7 +83,7 @@ class DetailActivity : AppCompatActivity() {
                     }
                 )
             } else {
-                uploadBlog(userId, title, content, "")
+                uploadBlog(userName, title, content, "")
             }
         }
 
@@ -108,8 +108,8 @@ class DetailActivity : AppCompatActivity() {
             }
     }
 
-    private fun uploadBlog(userId: Long, title: String, content: String, imageUrl: String) {
-        val model = BlogModel(userId, title, content, imageUrl,System.currentTimeMillis())
+    private fun uploadBlog(userName: String, title: String, content: String, imageUrl: String) {
+        val model = BlogModel(userName, title, content, imageUrl,System.currentTimeMillis())
         blogDB.push().setValue(model)
 
         hideProgress()
