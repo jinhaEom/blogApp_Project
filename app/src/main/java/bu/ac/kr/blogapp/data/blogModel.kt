@@ -8,13 +8,10 @@ import androidx.room.PrimaryKey
 data class BlogModel(
 
     @PrimaryKey(autoGenerate = true)
-    val userId : Long?,
-
-    @ColumnInfo(name = "userName")
-    var userName : String,
+    val userId: Long?=null,
 
     @ColumnInfo(name = "seq")
-    var imageUrl : String,
+    var imageUrl: String,
 
     @ColumnInfo(name = "title")
     var title: String,
@@ -25,6 +22,5 @@ data class BlogModel(
     @ColumnInfo(name = "createDate")
     var createDate: Long
 ){
-    constructor(): this(null,"","","","",-1)
-    constructor(userName: String, title: String, content: String, imageUrl: String, currentTimeMillis: Long) : this()
+    constructor(): this(0,"","","",0)
 }

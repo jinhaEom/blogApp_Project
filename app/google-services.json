@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "130371019250",
+    "firebase_url": "https://diaryapp-3bbc9-default-rtdb.firebaseio.com",
     "project_id": "diaryapp-3bbc9",
     "storage_bucket": "diaryapp-3bbc9.appspot.com"
   },

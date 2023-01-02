@@ -6,18 +6,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
-import android.view.LayoutInflater
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProviders
 import bu.ac.kr.blogapp.data.BlogModel
-import bu.ac.kr.blogapp.data.BlogViewModel
 import bu.ac.kr.blogapp.data.DBKey.Companion.DB_BLOG
-import bu.ac.kr.blogapp.databinding.ActivityDetailBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
@@ -25,14 +19,16 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import kotlin.random.Random
+
 
 class DetailActivity : AppCompatActivity() {
     private var selectedUri: Uri? = null
     private val auth: FirebaseAuth by lazy {
         Firebase.auth
     }
+
     private val storage: FirebaseStorage by lazy {
         Firebase.storage
     }
@@ -67,15 +63,14 @@ class DetailActivity : AppCompatActivity() {
         findViewById<Button>(R.id.saveButton).setOnClickListener {
             val title = findViewById<EditText>(R.id.descriptionTextView).text.toString()
             val content = findViewById<EditText>(R.id.reviewEditText).text.toString()
-            val userName = auth.currentUser?.uid.orEmpty()
-
+            val userId  = auth.currentUser?.uid
             showProgress()
 
             if (selectedUri != null) {
                 val photoUri = selectedUri ?: return@setOnClickListener
                 uploadPhoto(photoUri,
                     successHandler = { uri ->
-                        uploadBlog(userName, title, content, uri)
+                        uploadBlog(0,title,content, "")
                     },
                     errorHandler = {
                         Toast.makeText(this, "사진 업로드에  실패하였습니다.", Toast.LENGTH_SHORT).show()
@@ -83,8 +78,9 @@ class DetailActivity : AppCompatActivity() {
                     }
                 )
             } else {
-                uploadBlog(userName, title, content, "")
+                uploadBlog(0,title, content,"")
             }
+
         }
 
 
@@ -108,8 +104,8 @@ class DetailActivity : AppCompatActivity() {
             }
     }
 
-    private fun uploadBlog(userName: String, title: String, content: String, imageUrl: String) {
-        val model = BlogModel(userName, title, content, imageUrl,System.currentTimeMillis())
+    private fun uploadBlog(userId: Long, imageUrl: String, title: String, content: String) {
+        val model = BlogModel(userId, imageUrl, title, content , System.currentTimeMillis())
         blogDB.push().setValue(model)
 
         hideProgress()

@@ -13,9 +13,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class BlogAdapter(val onItemClicked: (BlogModel) -> Unit): ListAdapter<BlogModel, BlogAdapter.ViewHolder>(diffUtil){
+class BlogAdapter(val onItemClicked: (BlogModel) -> Unit) :
+    ListAdapter<BlogModel, BlogAdapter.ViewHolder>(diffUtil) {
 
-    inner class ViewHolder(private val binding : ItemListBinding): RecyclerView.ViewHolder(binding.root){
+    inner class ViewHolder(private val binding: ItemListBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(blogModel: BlogModel) {
             val format = SimpleDateFormat("MM월 dd일")
@@ -37,7 +39,12 @@ class BlogAdapter(val onItemClicked: (BlogModel) -> Unit): ListAdapter<BlogModel
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return ViewHolder(ItemListBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
