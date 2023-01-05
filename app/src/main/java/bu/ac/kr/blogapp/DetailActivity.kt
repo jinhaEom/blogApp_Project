@@ -69,8 +69,8 @@ class DetailActivity : AppCompatActivity() {
             if (selectedUri != null) {
                 val photoUri = selectedUri ?: return@setOnClickListener
                 uploadPhoto(photoUri,
-                    successHandler = { uri ->
-                        uploadBlog(0,title,content, "")
+                    successHandler = {uri ->
+                        uploadBlog(0,uri,title,content)
                     },
                     errorHandler = {
                         Toast.makeText(this, "사진 업로드에  실패하였습니다.", Toast.LENGTH_SHORT).show()
@@ -78,7 +78,7 @@ class DetailActivity : AppCompatActivity() {
                     }
                 )
             } else {
-                uploadBlog(0,title, content,"")
+                uploadBlog(0,"",title,content)
             }
 
         }
