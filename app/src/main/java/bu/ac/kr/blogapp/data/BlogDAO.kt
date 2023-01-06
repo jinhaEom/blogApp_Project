@@ -8,7 +8,7 @@ import androidx.room.Query
 
 @Dao
 interface BlogDAO {
-    @Query("SELECT * from tb_blog ORDER BY createDate ASC")
+    @Query("SELECT * from tb_blog ORDER BY createDate DESC")
     fun getBlogList() : LiveData<List<BlogModel>>
 
     @Insert

@@ -1,27 +1,15 @@
 package bu.ac.kr.blogapp
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Insets.add
-import android.os.Build.VERSION_CODES.P
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.method.Touch
-import android.util.AttributeSet
-import android.view.View
-import android.widget.Adapter
 import android.widget.ImageView
 import androidx.core.graphics.Insets.add
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import bu.ac.kr.blogapp.adapter.BlogAdapter
 import bu.ac.kr.blogapp.data.BlogModel
-import bu.ac.kr.blogapp.data.BlogViewModel
 import bu.ac.kr.blogapp.data.DBKey.Companion.DB_BLOG
 import bu.ac.kr.blogapp.databinding.ActivityMainBinding
 import com.google.android.gms.common.util.WorkSourceUtil.add
@@ -31,7 +19,6 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.ChildEvent
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 

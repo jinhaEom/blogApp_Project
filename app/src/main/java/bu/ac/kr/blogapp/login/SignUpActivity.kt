@@ -56,6 +56,7 @@ class SignUpActivity : AppCompatActivity() {
 
         }
     }
+
     private fun cancel() {
         val signupCancel = findViewById<Button>(R.id.signupCancel)
         signupCancel.setOnClickListener {

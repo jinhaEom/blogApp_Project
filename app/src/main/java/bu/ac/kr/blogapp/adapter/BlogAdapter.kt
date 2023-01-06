@@ -64,4 +64,3 @@ class BlogAdapter(val onItemClicked: (BlogModel) -> Unit) :
         }
     }
 }
-

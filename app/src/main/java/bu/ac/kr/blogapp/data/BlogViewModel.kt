@@ -23,4 +23,7 @@ class BlogViewModel(application: Application) :
     fun getBlogList() : LiveData<List<BlogModel>> {
         return mBlogItems
     }
+
+
+
 }
