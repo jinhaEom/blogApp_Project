@@ -112,7 +112,9 @@ class DetailActivity : AppCompatActivity() {
 
     private fun uploadBlog(id:Long, userId: String, imageUrl: String, title: String, content: String) {
         val model = BlogModel(id, userId, imageUrl, title, content , System.currentTimeMillis())
-        blogDB.push().setValue(model) //TODO
+            blogDB.push().setValue(model)
+
+         //TODO
 
         hideProgress()
         finish()

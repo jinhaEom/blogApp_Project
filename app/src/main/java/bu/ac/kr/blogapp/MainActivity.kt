@@ -4,8 +4,15 @@ import android.content.Intent
 import android.graphics.Insets.add
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.core.graphics.Insets.add
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import bu.ac.kr.blogapp.adapter.BlogAdapter
@@ -13,6 +20,8 @@ import bu.ac.kr.blogapp.data.BlogModel
 import bu.ac.kr.blogapp.data.DBKey.Companion.DB_BLOG
 import bu.ac.kr.blogapp.databinding.ActivityMainBinding
 import com.google.android.gms.common.util.WorkSourceUtil.add
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ChildEventListener
@@ -29,6 +38,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userDB : DatabaseReference
     private lateinit var blogAdapter : BlogAdapter
 
+
+
     private val blogList = mutableListOf<BlogModel>()
 
     private val listener = object : ChildEventListener{
@@ -37,6 +48,7 @@ class MainActivity : AppCompatActivity() {
             blogModel ?: return
             blogList.add(blogModel)
             blogAdapter.submitList(blogList)
+            //TODO
         }
 
         override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?){}
@@ -59,6 +71,9 @@ class MainActivity : AppCompatActivity() {
         val view = binding!!.root
         setContentView(view)
 
+
+        val toolbar : Toolbar = findViewById(R.id.main_layout_toolbar)
+        setSupportActionBar(toolbar)
         blogList.clear()
         blogDB = Firebase.database.reference.child(DB_BLOG)
 
@@ -72,13 +87,32 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = blogAdapter
 
 
-        findViewById<ImageView>(R.id.btn_add).setOnClickListener {
-            val intent = Intent(this, DetailActivity::class.java)
-            startActivity(intent)
-        }
+//        findViewById<ImageView>(R.id.btn_add).setOnClickListener {
+//            val intent = Intent(this, DetailActivity::class.java)
+//            startActivity(intent)
+//        }
         blogDB.addChildEventListener(listener)
 
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater : MenuInflater = menuInflater
+        inflater.inflate(R.menu.main_menu,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val intent = Intent(this, DetailActivity::class.java)
+        return when(item.itemId){
+            R.id.btn_add -> {
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -89,4 +123,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         blogDB.removeEventListener(listener)
     }
+
+
+
 }
