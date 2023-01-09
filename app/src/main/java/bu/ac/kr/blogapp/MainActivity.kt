@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Insets.add
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -34,6 +35,8 @@ import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var drawerLayout: DrawerLayout
+    lateinit var navigationView : NavigationView
     private lateinit var blogDB : DatabaseReference
     private lateinit var userDB : DatabaseReference
     private lateinit var blogAdapter : BlogAdapter
@@ -67,15 +70,25 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding!!.root
-        setContentView(view)
+        setContentView(R.layout.activity_main)
 
 
         val toolbar : Toolbar = findViewById(R.id.main_layout_toolbar)
+
+
+
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true) // 드로어를 꺼낼 홈 버튼 활성화
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.navi_menu)
+
+        drawerLayout = findViewById(R.id.main_drawer_layout)
+
+
+
         blogList.clear()
         blogDB = Firebase.database.reference.child(DB_BLOG)
+
+
 
 
 
@@ -98,6 +111,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater : MenuInflater = menuInflater
         inflater.inflate(R.menu.main_menu,menu)
+
         return true
     }
 
@@ -108,10 +122,20 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
                 true
             }
-            else -> super.onOptionsItemSelected(item)
+            android.R.id.home -> {
+                drawerLayout.openDrawer(GravityCompat.START)
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
 
         }
+
+        return super.onOptionsItemSelected(item)
     }
+
+
 
     override fun onResume() {
         super.onResume()
