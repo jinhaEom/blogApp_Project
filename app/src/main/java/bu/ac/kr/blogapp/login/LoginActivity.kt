@@ -1,12 +1,12 @@
 package bu.ac.kr.blogapp.login
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import bu.ac.kr.blogapp.MainActivity
-import bu.ac.kr.blogapp.data.BlogViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth

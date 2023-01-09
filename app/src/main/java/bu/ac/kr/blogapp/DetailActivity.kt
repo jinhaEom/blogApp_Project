@@ -1,5 +1,4 @@
 package bu.ac.kr.blogapp
-
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -22,29 +21,21 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import java.io.StringReader
-import java.io.StringWriter
-import java.lang.ref.ReferenceQueue
 
 class DetailActivity : AppCompatActivity() {
     private var selectedUri: Uri? = null
     private val auth: FirebaseAuth by lazy {
         Firebase.auth
     }
-    private lateinit var blogModel : BlogModel
     private val storage: FirebaseStorage by lazy {
         Firebase.storage
     }
     private val blogDB: DatabaseReference by lazy {
         Firebase.database.reference.child(DB_BLOG)
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_detail)
-
-
         findViewById<ImageView>(R.id.coverImageView).setOnClickListener {
             when {
                 ContextCompat.checkSelfPermission(
@@ -69,7 +60,6 @@ class DetailActivity : AppCompatActivity() {
             val content = findViewById<EditText>(R.id.reviewEditText).text.toString()
             val userId = auth.currentUser!!.uid
             showProgress()
-
             if (selectedUri != null) {
                 val photoUri = selectedUri ?: return@setOnClickListener
                 uploadPhoto(photoUri,
@@ -84,14 +74,8 @@ class DetailActivity : AppCompatActivity() {
             } else {
                 uploadBlog(0,userId,"",title,content)
             }
-
         }
-
-
     }
-
-
-
     private fun uploadPhoto(uri: Uri, successHandler: (String) -> Unit, errorHandler: () -> Unit) {
         val fileName = "${System.currentTimeMillis()}.png"
         storage.reference.child("blog/photo").child(fileName)
@@ -112,14 +96,13 @@ class DetailActivity : AppCompatActivity() {
 
     private fun uploadBlog(id:Long, userId: String, imageUrl: String, title: String, content: String) {
         val model = BlogModel(id, userId, imageUrl, title, content , System.currentTimeMillis())
-            blogDB.push().setValue(model)
+        blogDB.push().setValue(model) //TODO
 
-         //TODO
+        //TODO
 
         hideProgress()
         finish()
     }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -135,25 +118,19 @@ class DetailActivity : AppCompatActivity() {
                 }
         }
     }
-
     private fun startContentProvider() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
         startActivityForResult(intent, 2020)
     }
-
     private fun showProgress() {
         findViewById<ProgressBar>(R.id.progressBar).isVisible=true
-
     }
-
     private fun hideProgress() {
         findViewById<ProgressBar>(R.id.progressBar).isVisible=false
     }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (resultCode != Activity.RESULT_OK) {
             return
         }
@@ -172,19 +149,14 @@ class DetailActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun showPermissionContextPopup() {  //사진에 불러올때에 대한 권한
         AlertDialog.Builder(this)
             .setTitle("권한이 필요합니다.")
             .setMessage("사진을 가져오기 위해 필요합니다.")
             .setPositiveButton("동의") { _, _ ->
                 requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1010)
-
             }
             .create()
             .show()
     }
-
 }
-
-
