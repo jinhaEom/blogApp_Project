@@ -1,25 +1,27 @@
 package bu.ac.kr.blogapp.login
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewbinding.ViewBinding
 import bu.ac.kr.blogapp.R
-import bu.ac.kr.blogapp.databinding.ActivityLoginBinding
+import bu.ac.kr.blogapp.data.DBKey
 import bu.ac.kr.blogapp.databinding.ActivitySignupBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class SignUpActivity : AppCompatActivity() {
     private var auth : FirebaseAuth? = null
+
     private val binding by lazy { ActivitySignupBinding.inflate(layoutInflater)}
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+
         auth = Firebase.auth
         setContentView(binding.root)
 
@@ -30,6 +32,7 @@ class SignUpActivity : AppCompatActivity() {
     }
     private fun createAccount(email: String, password: String, passwordCheck: String) {
         val signupOk = findViewById<Button>(R.id.signupOk)
+
         if (email.isNotEmpty() && password.isNotEmpty()) {
             if (password != passwordCheck) {
                 Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
@@ -39,6 +42,7 @@ class SignUpActivity : AppCompatActivity() {
                     ?.addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             signupOk.isEnabled = true
+
                             Toast.makeText(
                                 this,
                                 "회원가입에 성공했습니다. 로그인 버튼을눌러 로그인 해주세요.",
@@ -56,6 +60,15 @@ class SignUpActivity : AppCompatActivity() {
 
         }
     }
+//    private fun saveUserName(name : String){
+//        val userId = getCurrentUserID()
+//        val currentUserDB = userDB.child(auth!!.currentUser!!.uid)
+//        val user = mutableMapOf<String, Any>()
+//        user["name"] = name
+//        currentUserDB.updateChildren(user)
+//
+//    }
+
 
     private fun cancel() {
         val signupCancel = findViewById<Button>(R.id.signupCancel)
@@ -63,7 +76,5 @@ class SignUpActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
-
-
     }
 }

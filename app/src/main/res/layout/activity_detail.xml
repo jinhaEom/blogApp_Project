@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="20dp"
+    android:background="@color/white2"
     xmlns:tools="http://schemas.android.com/tools">
 
     <ScrollView
@@ -20,16 +21,15 @@
 
 
             <ImageView
-                android:src="@drawable/rectangle_shape"
                 android:id="@+id/coverImageView"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
-                android:layout_marginTop="20dp"
+                android:src="@drawable/rectangle_shape"
                 app:layout_constraintBottom_toBottomOf="@id/coverImageView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:src="@drawable/ic_launcher_background"
-                />
+                app:layout_constraintHorizontal_bias="0.495"
+
+                app:layout_constraintStart_toStartOf="parent" />
 
             <EditText
                 android:id="@+id/descriptionTextView"

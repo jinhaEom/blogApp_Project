@@ -31,6 +31,7 @@
         <activity android:name=".login.SignUpActivity"/>
         <activity android:name=".MainActivity"/>
         <activity android:name=".DetailActivity"/>
+        <activity android:name=".ClickActivity"/>
     </application>
 
 </manifest>

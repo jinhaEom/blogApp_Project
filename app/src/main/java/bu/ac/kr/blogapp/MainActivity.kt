@@ -6,7 +6,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -17,7 +18,6 @@ import bu.ac.kr.blogapp.data.BlogModel
 import bu.ac.kr.blogapp.data.DBKey.Companion.DB_BLOG
 import bu.ac.kr.blogapp.data.DBKey.Companion.USER_ID
 import bu.ac.kr.blogapp.databinding.ActivityMainBinding
-import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ChildEventListener
@@ -66,7 +66,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -92,7 +91,9 @@ class MainActivity : AppCompatActivity() {
 
 
         blogAdapter = BlogAdapter(onItemClicked = {
-            //TODO
+            val intent = Intent(this,ClickActivity::class.java)
+            intent.putExtra("blog",it)
+            startActivity(intent)
         })
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView_List)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -104,7 +105,6 @@ class MainActivity : AppCompatActivity() {
 //            startActivity(intent)
 //        }
         blogDB.addChildEventListener(listener)
-
 
 
     }
@@ -127,6 +127,8 @@ class MainActivity : AppCompatActivity() {
             }
             android.R.id.home -> {
                 drawerLayout.openDrawer(GravityCompat.START)
+                findViewById<TextView>(R.id.userName).text = auth.currentUser?.email+"${"\n"}님 환영합니다."
+
                 true
             }
             else -> {
