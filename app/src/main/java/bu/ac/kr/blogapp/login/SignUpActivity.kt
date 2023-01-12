@@ -60,14 +60,7 @@ class SignUpActivity : AppCompatActivity() {
 
         }
     }
-//    private fun saveUserName(name : String){
-//        val userId = getCurrentUserID()
-//        val currentUserDB = userDB.child(auth!!.currentUser!!.uid)
-//        val user = mutableMapOf<String, Any>()
-//        user["name"] = name
-//        currentUserDB.updateChildren(user)
-//
-//    }
+
 
 
     private fun cancel() {

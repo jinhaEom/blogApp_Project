@@ -1,16 +1,23 @@
 package bu.ac.kr.blogapp
 
+import android.content.Context
 import android.content.Intent
+import android.os.Build.VERSION_CODES.M
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import bu.ac.kr.blogapp.adapter.BlogAdapter
@@ -18,6 +25,9 @@ import bu.ac.kr.blogapp.data.BlogModel
 import bu.ac.kr.blogapp.data.DBKey.Companion.DB_BLOG
 import bu.ac.kr.blogapp.data.DBKey.Companion.USER_ID
 import bu.ac.kr.blogapp.databinding.ActivityMainBinding
+import bu.ac.kr.blogapp.login.LoginActivity
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ChildEventListener
@@ -28,14 +38,12 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var blogDB : DatabaseReference
     private lateinit var userDB : DatabaseReference
     private lateinit var blogAdapter : BlogAdapter
-
-
 
     private val blogList = mutableListOf<BlogModel>()
 
@@ -45,12 +53,18 @@ class MainActivity : AppCompatActivity() {
             val blogModel = snapshot.getValue(BlogModel::class.java)
 
             //TODO
-            if(snapshot.child(USER_ID).value == auth.currentUser!!.uid){
-                blogModel?.let { blogList.add(it) }
-                blogAdapter.submitList(blogList)
+            try{
+                if(snapshot.child(USER_ID).value == auth.currentUser!!.uid){
+                    blogModel?.let { blogList.add(it) }
+                    Log.e("Listeners", "ChildEventListener-onChildAdded : ${snapshot.value}", )
+                    blogAdapter.submitList(blogList)
+
+                }
+                blogModel ?: return
+            }catch (e : NullPointerException){
 
             }
-            blogModel ?: return
+
 
         }
 
@@ -80,12 +94,14 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setHomeAsUpIndicator(R.drawable.navi_menu)
 
         drawerLayout = findViewById(R.id.main_drawer_layout)
+        findViewById<NavigationView>(R.id.main_navigationView).setNavigationItemSelectedListener(this)
+
+
 
 
 
         blogList.clear()
         blogDB = Firebase.database.reference.child(DB_BLOG)
-
 
 
 
@@ -105,6 +121,7 @@ class MainActivity : AppCompatActivity() {
 //            startActivity(intent)
 //        }
         blogDB.addChildEventListener(listener)
+
 
 
     }
@@ -128,17 +145,28 @@ class MainActivity : AppCompatActivity() {
             android.R.id.home -> {
                 drawerLayout.openDrawer(GravityCompat.START)
                 findViewById<TextView>(R.id.userName).text = auth.currentUser?.email+"${"\n"}님 환영합니다."
-
                 true
             }
             else -> {
                 super.onOptionsItemSelected(item)
             }
-
         }
-
         return super.onOptionsItemSelected(item)
     }
+    override fun onNavigationItemSelected(menuItem: MenuItem) : Boolean {
+        when(menuItem.itemId){
+            R.id.logout-> {
+                auth.signOut()
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                this.finish()
+            }
+
+        }
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
+    }
+
 
 
 

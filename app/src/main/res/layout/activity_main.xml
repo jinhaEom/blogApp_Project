@@ -6,12 +6,12 @@
     android:id="@+id/main_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    
+
     <include
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         layout="@layout/activity_main_layout"/>
-    
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/main_navigationView"
         android:layout_width="wrap_content"

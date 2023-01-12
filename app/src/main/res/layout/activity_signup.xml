@@ -10,7 +10,6 @@
 
 
     <TextView
-        android:id="@+id/startDiary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
@@ -24,7 +23,6 @@
         app:layout_constraintBottom_toTopOf="@+id/emailEditText"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <EditText
         android:id="@+id/emailEditText"
@@ -41,26 +39,11 @@
         android:textColor="@color/black"
         android:textColorHint="@color/gray"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@id/userNickName"
+
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.666"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/userNickName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:hint="닉네임"
-        android:paddingVertical="14dp"
-        android:paddingLeft="10dp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/gray"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@id/passwordEditText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
 
 
     <EditText
@@ -80,7 +63,7 @@
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/userNickName" />
+        app:layout_constraintTop_toBottomOf="@id/emailEditText" />
 
     <EditText
         android:id="@+id/passwordCheck"

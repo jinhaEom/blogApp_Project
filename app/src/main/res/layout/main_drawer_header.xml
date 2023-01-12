@@ -17,15 +17,10 @@
         android:id="@+id/userName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="#000000"
-        android:text="Jinha Eom 님 반갑습니다."/>
+        android:text="Jinha Eom 님 \n환영합니다."/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="15dp"
-        android:textColor="#EB554C4C"
-        android:text="umjin98@naver.com"/>
+
 </LinearLayout>
