@@ -3,19 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="20dp"
     android:background="@color/white2"
     xmlns:tools="http://schemas.android.com/tools">
 
     <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -24,11 +24,10 @@
                 android:id="@+id/coverImageView"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
+                android:layout_marginBottom="128dp"
                 android:src="@drawable/rectangle_shape"
                 app:layout_constraintBottom_toBottomOf="@id/coverImageView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.495"
-
                 app:layout_constraintStart_toStartOf="parent" />
 
             <EditText
@@ -36,29 +35,49 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
+                android:background="@android:color/transparent"
+                android:hint="제목을 입력하세요."
                 android:textColor="@color/black"
+                android:textColorHint="@color/dark_gray"
                 android:textSize="25sp"
                 android:textStyle="bold"
-                android:hint="제목을 입력하세요."
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/coverImageView"
-                />
+                app:layout_constraintTop_toBottomOf="@id/coverImageView" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_margin="20dp"
+                android:src="@drawable/line_shape"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="20dp" />
+
 
             <EditText
-                android:hint="내용을 입력하세요."
-                tools:text="오늘은 정말 최고의 하루!"
+
                 android:id="@+id/reviewEditText"
                 android:layout_width="0dp"
                 android:layout_height="300dp"
                 android:layout_margin="15dp"
+                android:background="@drawable/content_boarder"
+                android:hint="내용을 입력하세요."
+                android:textColor="@color/dark_gray2"
+                android:textColorHint="@color/dark_gray"
                 app:layout_constraintBottom_toTopOf="@id/saveButton"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.482"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
+                app:layout_constraintTop_toBottomOf="@id/descriptionTextView"
+                app:layout_constraintVertical_bias="0.488"
+                tools:text="오늘은 정말 최고의 하루!" />
+
 
             <Button
-
+                android:background="@drawable/button_back"
                 android:id="@+id/saveButton"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"

@@ -1,7 +1,9 @@
 package bu.ac.kr.blogapp
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
+import android.icu.lang.UCharacter.GraphemeClusterBreak.V
 import android.os.Build.VERSION_CODES.M
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,14 +11,18 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.GravityCompat
+import androidx.core.view.isEmpty
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,7 +48,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var blogDB : DatabaseReference
-    private lateinit var userDB : DatabaseReference
     private lateinit var blogAdapter : BlogAdapter
 
     private val blogList = mutableListOf<BlogModel>()
@@ -85,7 +90,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
 
 
-        val toolbar : Toolbar = findViewById(R.id.main_layout_toolbar)
+        val toolbar: Toolbar = findViewById(R.id.main_layout_toolbar)
 
 
 
@@ -94,9 +99,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         supportActionBar?.setHomeAsUpIndicator(R.drawable.navi_menu)
 
         drawerLayout = findViewById(R.id.main_drawer_layout)
-        findViewById<NavigationView>(R.id.main_navigationView).setNavigationItemSelectedListener(this)
-
-
+        findViewById<NavigationView>(R.id.main_navigationView).setNavigationItemSelectedListener(
+            this)
 
 
 
@@ -107,13 +111,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
         blogAdapter = BlogAdapter(onItemClicked = {
-            val intent = Intent(this,ClickActivity::class.java)
-            intent.putExtra("blog",it)
+            val intent = Intent(this, ClickActivity::class.java)
+            intent.putExtra("blog", it)
             startActivity(intent)
         })
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView_List)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = blogAdapter
+
+
 
 
 //        findViewById<ImageView>(R.id.btn_add).setOnClickListener {
@@ -123,9 +129,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         blogDB.addChildEventListener(listener)
 
 
-
     }
-
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -156,10 +160,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(menuItem: MenuItem) : Boolean {
         when(menuItem.itemId){
             R.id.logout-> {
-                auth.signOut()
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
-                this.finish()
+                val builder = AlertDialog.Builder(this)
+                    .setTitle("로그아웃")
+                    .setMessage("로그아웃 하시겠습니까?")
+                    .setPositiveButton("확인"
+                    ) { _, _ ->
+                        auth.signOut()
+                        val intent = Intent(this, LoginActivity::class.java)
+                        startActivity(intent)
+                        this.finish()
+                    }
+                    .setNegativeButton("취소"
+                    ) { _, _ -> }
+                    builder.show()
             }
 
         }
@@ -180,4 +193,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onDestroy()
         blogDB.removeEventListener(listener)
     }
+
+
 }

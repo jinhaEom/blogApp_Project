@@ -1,12 +1,15 @@
 package bu.ac.kr.blogapp
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.room.Room
 import bu.ac.kr.blogapp.data.Blog
 import bu.ac.kr.blogapp.data.BlogDatabase
 import bu.ac.kr.blogapp.data.BlogModel
 import bu.ac.kr.blogapp.databinding.ActivityClickBinding
+import bu.ac.kr.blogapp.databinding.ClickToolbarBinding
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -26,6 +29,9 @@ class ClickActivity : AppCompatActivity() {
         binding = ActivityClickBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+
+
         db = Room.databaseBuilder(
             applicationContext,
             BlogDatabase::class.java,
@@ -40,6 +46,11 @@ class ClickActivity : AppCompatActivity() {
         Glide.with(binding.coverImageView.context)
             .load(model?.imageUrl.orEmpty())
             .into(binding.coverImageView)
+
+        binding.btnBack.setOnClickListener {
+            val intent = Intent(this,MainActivity::class.java)
+            startActivity(intent)
+        }
 
     }
 

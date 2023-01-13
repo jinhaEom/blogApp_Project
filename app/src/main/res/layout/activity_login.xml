@@ -75,7 +75,7 @@
         android:id="@+id/bt_login"
         android:layout_width="250sp"
         android:layout_height="wrap_content"
-        android:background="@drawable/btn_design"
+        android:background="@drawable/button_round_press"
         android:fontFamily="@font/puradakfont"
         android:text="로그인하기"
         app:layout_constraintBottom_toBottomOf="parent"
