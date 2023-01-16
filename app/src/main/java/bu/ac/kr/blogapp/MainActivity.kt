@@ -13,6 +13,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
+import android.widget.Checkable
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -21,6 +23,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.isEmpty
+import androidx.core.widget.ImageViewCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.Navigation
@@ -57,7 +60,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
             val blogModel = snapshot.getValue(BlogModel::class.java)
 
-            //TODO
             try{
                 if(snapshot.child(USER_ID).value == auth.currentUser!!.uid){
                     blogModel?.let { blogList.add(it) }
@@ -104,6 +106,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
 
+
+
         blogList.clear()
         blogDB = Firebase.database.reference.child(DB_BLOG)
 
@@ -127,6 +131,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //            startActivity(intent)
 //        }
         blogDB.addChildEventListener(listener)
+
+
+
 
 
     }
@@ -173,6 +180,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .setNegativeButton("취소"
                     ) { _, _ -> }
                     builder.show()
+            }
+            R.id.star ->{
+                val intent = Intent(this,bookMarkActivity::class.java)
+                startActivity(intent)
+//                if(findViewById<CheckBox>(R.id.bookMarkBtn).isChecked){
+//
+//                }
             }
 
         }
