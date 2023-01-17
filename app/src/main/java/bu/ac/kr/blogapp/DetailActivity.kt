@@ -3,17 +3,21 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.GnssAntennaInfo.Listener
 import android.net.Uri
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import bu.ac.kr.blogapp.adapter.BlogAdapter
+import bu.ac.kr.blogapp.data.BlogDatabase
 import bu.ac.kr.blogapp.data.BlogModel
-import bu.ac.kr.blogapp.data.BlogViewModel
 import bu.ac.kr.blogapp.data.DBKey.Companion.DB_BLOG
-import com.google.android.gms.common.internal.Objects.ToStringHelper
+import bu.ac.kr.blogapp.data.DBKey.Companion.USER_ID
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
@@ -36,6 +40,7 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+
         findViewById<ImageView>(R.id.coverImageView).setOnClickListener {
             when {
                 ContextCompat.checkSelfPermission(
@@ -76,6 +81,7 @@ class DetailActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun uploadPhoto(uri: Uri, successHandler: (String) -> Unit, errorHandler: () -> Unit) {
         val fileName = "${System.currentTimeMillis()}.png"
         storage.reference.child("blog/photo").child(fileName)
@@ -96,13 +102,15 @@ class DetailActivity : AppCompatActivity() {
 
     private fun uploadBlog(id:Long, userId: String, imageUrl: String, title: String, content: String) {
         val model = BlogModel(id, userId, imageUrl, title, content , System.currentTimeMillis())
-        blogDB.push().setValue(model) //TODO
+        blogDB.push().setValue(model)
 
         //TODO
 
         hideProgress()
         finish()
     }
+
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -159,4 +167,5 @@ class DetailActivity : AppCompatActivity() {
             .create()
             .show()
     }
+
 }

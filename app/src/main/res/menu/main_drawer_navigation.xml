@@ -6,9 +6,9 @@
         android:icon = "@drawable/ic_baseline_account_circle_24"
         android:title = "계정"
         />
-    <item android:id = "@+id/star"
-        android:icon = "@drawable/full_bookmark"
-        android:title = "즐겨찾기"
+    <item android:id = "@+id/cal"
+        android:icon = "@drawable/ic_baseline_calendar_month_24"
+        android:title = "캘린더"
         />
     <item android:id = "@+id/logout"
         android:icon = "@drawable/ic_baseline_exit_to_app_24"

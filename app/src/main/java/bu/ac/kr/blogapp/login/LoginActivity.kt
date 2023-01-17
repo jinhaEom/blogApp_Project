@@ -36,9 +36,6 @@ class LoginActivity : AppCompatActivity() {
 
 
     }
-
-
-
     fun signIn(email: String, password: String) {
 
         if (email.isNotEmpty() && password.isNotEmpty()) {
@@ -59,6 +56,9 @@ class LoginActivity : AppCompatActivity() {
                 }
         }
     }
+
+
+
 
 
     public override fun onStart() {

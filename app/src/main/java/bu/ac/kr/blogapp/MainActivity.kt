@@ -1,5 +1,7 @@
 package bu.ac.kr.blogapp
 
+import android.content.ClipData
+import android.content.ClipData.Item
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -23,6 +25,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.isEmpty
+import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.viewmodel.CreationExtras
@@ -30,6 +33,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import bu.ac.kr.blogapp.adapter.BlogAdapter
+import bu.ac.kr.blogapp.data.Blog
 import bu.ac.kr.blogapp.data.BlogModel
 import bu.ac.kr.blogapp.data.DBKey.Companion.DB_BLOG
 import bu.ac.kr.blogapp.data.DBKey.Companion.USER_ID
@@ -43,46 +47,51 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.ChildEvent
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var drawerLayout: DrawerLayout
-    private lateinit var blogDB : DatabaseReference
-    private lateinit var blogAdapter : BlogAdapter
+    private lateinit var blogDB: DatabaseReference
+    private lateinit var blogAdapter: BlogAdapter
 
     private val blogList = mutableListOf<BlogModel>()
 
 
-    private val listener = object : ChildEventListener{
+    private val listener = object : ChildEventListener {
         override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
             val blogModel = snapshot.getValue(BlogModel::class.java)
 
-            try{
-                if(snapshot.child(USER_ID).value == auth.currentUser!!.uid){
+            try {
+                if (snapshot.child(USER_ID).value == auth.currentUser!!.uid) {
                     blogModel?.let { blogList.add(it) }
-                    Log.e("Listeners", "ChildEventListener-onChildAdded : ${snapshot.value}", )
+                    Log.e("Listeners", "ChildEventListener-onChildAdded : ${snapshot.value}")
                     blogAdapter.submitList(blogList)
 
                 }
                 blogModel ?: return
-            }catch (e : NullPointerException){
+            } catch (e: NullPointerException) {
 
             }
 
 
         }
 
-        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?){}
-        override fun onChildRemoved(snapshot: DataSnapshot) {}
+        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
+        override fun onChildRemoved(snapshot: DataSnapshot) {
+        }
+
         override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
         override fun onCancelled(error: DatabaseError) {}
 
     }
 
-    private val auth : FirebaseAuth by lazy{
+    private val auth: FirebaseAuth by lazy {
         Firebase.auth
     }
 
@@ -124,8 +133,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         recyclerView.adapter = blogAdapter
 
 
-
-
 //        findViewById<ImageView>(R.id.btn_add).setOnClickListener {
 //            val intent = Intent(this, DetailActivity::class.java)
 //            startActivity(intent)
@@ -134,28 +141,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
 
-
-
     }
 
 
+
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater : MenuInflater = menuInflater
-        inflater.inflate(R.menu.main_menu,menu)
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.main_menu, menu)
 
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val intent = Intent(this, DetailActivity::class.java)
-        return when(item.itemId){
+
+        return when (item.itemId) {
             R.id.btn_add -> {
                 startActivity(intent)
                 true
             }
+//            R.id.btn_delete -> {
+//                //TODO
+//            }
             android.R.id.home -> {
                 drawerLayout.openDrawer(GravityCompat.START)
-                findViewById<TextView>(R.id.userName).text = auth.currentUser?.email+"${"\n"}님 환영합니다."
+                findViewById<TextView>(R.id.userName).text =
+                    auth.currentUser?.email + "${"\n"}님 환영합니다."
                 true
             }
             else -> {
@@ -164,9 +176,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         return super.onOptionsItemSelected(item)
     }
-    override fun onNavigationItemSelected(menuItem: MenuItem) : Boolean {
-        when(menuItem.itemId){
-            R.id.logout-> {
+
+    override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
+            R.id.logout -> {
                 val builder = AlertDialog.Builder(this)
                     .setTitle("로그아웃")
                     .setMessage("로그아웃 하시겠습니까?")
@@ -179,21 +192,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
                     .setNegativeButton("취소"
                     ) { _, _ -> }
-                    builder.show()
+                builder.show()
             }
-            R.id.star ->{
-                val intent = Intent(this,bookMarkActivity::class.java)
+            R.id.cal -> {
+                val intent = Intent(this, CalendarActivity::class.java)
                 startActivity(intent)
-//                if(findViewById<CheckBox>(R.id.bookMarkBtn).isChecked){
-//
-//                }
             }
 
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
-
 
 
 

@@ -1,17 +1,14 @@
 package bu.ac.kr.blogapp.data
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface BlogDAO {
-    @Query("SELECT * from tb_blog ORDER BY createDate DESC")
+    @Query("SELECT * from tb_blog ORDER BY createDate ASC")
     fun getBlogList() : LiveData<List<BlogModel>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertBlog(blogModel : BlogModel)
 
     @Delete

@@ -32,7 +32,7 @@
         <activity android:name=".MainActivity"/>
         <activity android:name=".DetailActivity"/>
         <activity android:name=".ClickActivity"/>
-        <activity android:name=".bookMarkActivity"/>
+        <activity android:name=".CalendarActivity"/>
     </application>
 
 </manifest>
