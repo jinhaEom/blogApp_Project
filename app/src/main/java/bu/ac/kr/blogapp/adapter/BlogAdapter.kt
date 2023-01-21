@@ -6,26 +6,20 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import bu.ac.kr.blogapp.data.BlogModel
-
 import bu.ac.kr.blogapp.databinding.ItemListBinding
 import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class BlogAdapter(val onItemClicked: (BlogModel) -> Unit) :
     ListAdapter<BlogModel, BlogAdapter.ViewHolder>(diffUtil) {
-
     inner class ViewHolder(private val binding: ItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
         fun bind(blogModel: BlogModel) {
             val format = SimpleDateFormat("MM월 dd일")
             val date = Date(blogModel.createDate)
-
             binding.DiaryTitle.text = blogModel.title
             binding.DiaryDate.text = format.format(date).toString()
-
             if (blogModel.imageUrl.isNotEmpty()) {
                 Glide.with(binding.DiaryImage)
                     .load(blogModel.imageUrl)
@@ -36,7 +30,6 @@ class BlogAdapter(val onItemClicked: (BlogModel) -> Unit) :
             }
         }
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ItemListBinding.inflate(
@@ -56,7 +49,6 @@ class BlogAdapter(val onItemClicked: (BlogModel) -> Unit) :
             override fun areItemsTheSame(oldItem: BlogModel, newItem: BlogModel): Boolean {
                 return oldItem.createDate == newItem.createDate
             }
-
             override fun areContentsTheSame(oldItem: BlogModel, newItem: BlogModel): Boolean {
                 return oldItem == newItem
             }

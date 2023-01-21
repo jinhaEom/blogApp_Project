@@ -6,12 +6,9 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import bu.ac.kr.blogapp.R
-import bu.ac.kr.blogapp.data.DBKey
 import bu.ac.kr.blogapp.databinding.ActivitySignupBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class SignUpActivity : AppCompatActivity() {
@@ -32,11 +29,9 @@ class SignUpActivity : AppCompatActivity() {
     }
     private fun createAccount(email: String, password: String, passwordCheck: String) {
         val signupOk = findViewById<Button>(R.id.signupOk)
-
         if (email.isNotEmpty() && password.isNotEmpty()) {
             if (password != passwordCheck) {
                 Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
-
             } else {
                 auth?.createUserWithEmailAndPassword(email, password)
                     ?.addOnCompleteListener(this) { task ->
@@ -53,11 +48,8 @@ class SignUpActivity : AppCompatActivity() {
                         }
                     }
             }
-
-
         } else {
             Toast.makeText(this, "이메일이 이미 존재하거나 회원가입에 실패하였습니다.", Toast.LENGTH_SHORT).show()
-
         }
     }
 

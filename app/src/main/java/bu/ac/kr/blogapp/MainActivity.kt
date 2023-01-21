@@ -1,57 +1,35 @@
 package bu.ac.kr.blogapp
 
-import android.content.ClipData
-import android.content.ClipData.Item
-import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
-import android.icu.lang.UCharacter.GraphemeClusterBreak.V
-import android.os.Build.VERSION_CODES.M
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
-import android.widget.Button
 import android.widget.CheckBox
-import android.widget.Checkable
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.GravityCompat
-import androidx.core.view.isEmpty
-import androidx.core.view.isVisible
-import androidx.core.widget.ImageViewCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import bu.ac.kr.blogapp.adapter.BlogAdapter
-import bu.ac.kr.blogapp.data.Blog
 import bu.ac.kr.blogapp.data.BlogModel
 import bu.ac.kr.blogapp.data.DBKey.Companion.DB_BLOG
 import bu.ac.kr.blogapp.data.DBKey.Companion.USER_ID
-import bu.ac.kr.blogapp.databinding.ActivityMainBinding
 import bu.ac.kr.blogapp.login.LoginActivity
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.ChildEvent
 import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -59,10 +37,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var blogDB: DatabaseReference
     private lateinit var blogAdapter: BlogAdapter
-
+    private val auth: FirebaseAuth by lazy {
+        Firebase.auth
+    }
     private val blogList = mutableListOf<BlogModel>()
-
-
     private val listener = object : ChildEventListener {
         override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
             val blogModel = snapshot.getValue(BlogModel::class.java)
@@ -72,39 +50,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     blogModel?.let { blogList.add(it) }
                     Log.e("Listeners", "ChildEventListener-onChildAdded : ${snapshot.value}")
                     blogAdapter.submitList(blogList)
-
                 }
                 blogModel ?: return
-            } catch (e: NullPointerException) {
-
-            }
-
-
+            } catch (e: NullPointerException) {}
         }
-
         override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
-        override fun onChildRemoved(snapshot: DataSnapshot) {
-        }
-
+        override fun onChildRemoved(snapshot: DataSnapshot) {}
         override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
         override fun onCancelled(error: DatabaseError) {}
-
     }
-
-    private val auth: FirebaseAuth by lazy {
-        Firebase.auth
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         val toolbar: Toolbar = findViewById(R.id.main_layout_toolbar)
-
-
-
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true) // 드로어를 꺼낼 홈 버튼 활성화
         supportActionBar?.setHomeAsUpIndicator(R.drawable.navi_menu)
@@ -112,15 +72,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout = findViewById(R.id.main_drawer_layout)
         findViewById<NavigationView>(R.id.main_navigationView).setNavigationItemSelectedListener(
             this)
-
-
-
-
-
         blogList.clear()
         blogDB = Firebase.database.reference.child(DB_BLOG)
-
-
 
 
         blogAdapter = BlogAdapter(onItemClicked = {
@@ -132,24 +85,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = blogAdapter
 
-
-//        findViewById<ImageView>(R.id.btn_add).setOnClickListener {
-//            val intent = Intent(this, DetailActivity::class.java)
-//            startActivity(intent)
-//        }
         blogDB.addChildEventListener(listener)
-
-
-
     }
-
-
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.main_menu, menu)
-
         return true
     }
 
@@ -161,9 +102,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(intent)
                 true
             }
-//            R.id.btn_delete -> {
-//                //TODO
-//            }
+            R.id.btn_delete -> {
+               if(findViewById<CheckBox>(R.id.bookMarkBtn).isChecked){
+                   blogList.removeAt(blogAdapter.currentList.lastIndex)
+                   Firebase.database.reference.removeValue()
+                   blogAdapter.notifyDataSetChanged()
+                   Toast.makeText(this,"삭제되었습니다.",Toast.LENGTH_SHORT).show()
+               }
+                true
+            }
             android.R.id.home -> {
                 drawerLayout.openDrawer(GravityCompat.START)
                 findViewById<TextView>(R.id.userName).text =
@@ -203,8 +150,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
-
-
 
     override fun onResume() {
         super.onResume()

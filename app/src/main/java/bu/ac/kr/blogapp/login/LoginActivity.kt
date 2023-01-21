@@ -22,22 +22,15 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-
         auth = Firebase.auth
-
         binding.btLogin.setOnClickListener {
-
             signIn(binding.appId.text.toString(),binding.appPw.text.toString())
         }
         binding.signUpMake.setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
-
-
     }
     fun signIn(email: String, password: String) {
-
         if (email.isNotEmpty() && password.isNotEmpty()) {
             auth?.signInWithEmailAndPassword(email, password)
                 ?.addOnCompleteListener(this) { task ->
@@ -56,19 +49,11 @@ class LoginActivity : AppCompatActivity() {
                 }
         }
     }
-
-
-
-
-
     public override fun onStart() {
         super.onStart()
         moveMainPage(auth?.currentUser)
 
     }
-
-
-
     // 유저정보 넘겨주고 메인 액티비티 호출
     private fun moveMainPage(user: FirebaseUser?){
         if(user!= null){
