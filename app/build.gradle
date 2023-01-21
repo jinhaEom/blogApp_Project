@@ -71,11 +71,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx:20.1.0'
     implementation 'com.google.firebase:firebase-database-ktx'
 
-
-    implementation("androidx.cardview:cardview:1.0.0")
-
-
-
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     kapt 'androidx.lifecycle:lifecycle-compiler:2.2.0'
 
