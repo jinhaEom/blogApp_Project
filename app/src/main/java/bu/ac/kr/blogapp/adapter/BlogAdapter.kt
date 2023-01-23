@@ -12,9 +12,15 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class BlogAdapter(val onItemClicked: (BlogModel) -> Unit) :
+
     ListAdapter<BlogModel, BlogAdapter.ViewHolder>(diffUtil) {
     inner class ViewHolder(private val binding: ItemListBinding) :
+
+
+
         RecyclerView.ViewHolder(binding.root) {
+
+
         fun bind(blogModel: BlogModel) {
             val format = SimpleDateFormat("MM월 dd일")
             val date = Date(blogModel.createDate)
@@ -43,6 +49,10 @@ class BlogAdapter(val onItemClicked: (BlogModel) -> Unit) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
+
+
+
+
 
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<BlogModel>() {

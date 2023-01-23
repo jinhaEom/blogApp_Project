@@ -1,6 +1,7 @@
 package bu.ac.kr.blogapp
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.CheckBox
+import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -20,6 +22,7 @@ import bu.ac.kr.blogapp.adapter.BlogAdapter
 import bu.ac.kr.blogapp.data.BlogModel
 import bu.ac.kr.blogapp.data.DBKey.Companion.DB_BLOG
 import bu.ac.kr.blogapp.data.DBKey.Companion.USER_ID
+import bu.ac.kr.blogapp.databinding.ActivityDetailBinding
 import bu.ac.kr.blogapp.login.LoginActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -28,8 +31,10 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.net.URI
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -54,7 +59,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 blogModel ?: return
             } catch (e: NullPointerException) {}
         }
-        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
+        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+
+        }
         override fun onChildRemoved(snapshot: DataSnapshot) {}
         override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
         override fun onCancelled(error: DatabaseError) {}
@@ -74,6 +81,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             this)
         blogList.clear()
         blogDB = Firebase.database.reference.child(DB_BLOG)
+
 
 
         blogAdapter = BlogAdapter(onItemClicked = {
@@ -104,9 +112,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.btn_delete -> {
                if(findViewById<CheckBox>(R.id.bookMarkBtn).isChecked){
-                   blogList.removeAt(blogAdapter.currentList.lastIndex)
-                   Firebase.database.reference.removeValue()
-                   blogAdapter.notifyDataSetChanged()
+
+                   blogDB.push().removeValue()
+                   Firebase.database.reference.child(DB_BLOG).child("key").removeValue()
                    Toast.makeText(this,"삭제되었습니다.",Toast.LENGTH_SHORT).show()
                }
                 true
@@ -157,10 +165,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         blogAdapter.notifyDataSetChanged()
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
         blogDB.removeEventListener(listener)
     }
-
 
 }
